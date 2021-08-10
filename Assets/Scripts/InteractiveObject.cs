@@ -2,52 +2,50 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Geekbrains
+
+internal abstract class InteractiveObject : MonoBehaviour, IComparable<InteractiveObject>
 {
-    public abstract class InteractiveObject : MonoBehaviour, IComparable<InteractiveObject>
+    // protected IView _view;
+    public event Action<InteractiveObject> OnDestroyChange;
+    public bool IsInteractable { get; } = true;
+
+    private void OnTriggerEnter(Collider other)
     {
-        // protected IView _view;
-        public event Action<InteractiveObject> OnDestroyChange;
-        public bool IsInteractable { get; } = true;
-
-        private void OnTriggerEnter(Collider other)
+        if (!IsInteractable || !other.CompareTag("Player"))
         {
-            if (!IsInteractable || !other.CompareTag("Player"))
-            {
-                return;
-            }
-            Interaction();
-            OnDestroyChange?.Invoke(this);
-            Destroy(gameObject);
+            return;
         }
+        Interaction();
+        OnDestroyChange?.Invoke(this);
+        Destroy(gameObject);
+    }
 
-        protected abstract void Interaction();
+    protected abstract void Interaction();
 
-        /*private void Start()
+    /*private void Start()
+    {
+        ((IAction)this).Action();
+    }
+
+    void IAction.Action()
+    {
+        if (TryGetComponent(out Renderer renderer))
         {
-            ((IAction)this).Action();
+            renderer.material.color = Random.ColorHSV();
         }
+    }*/
 
-        void IAction.Action()
+    /*public void Initialization(IView view)
+    {
+        _view = view;
+        if (TryGetComponent(out Renderer renderer))
         {
-            if (TryGetComponent(out Renderer renderer))
-            {
-                renderer.material.color = Random.ColorHSV();
-            }
-        }*/
-
-        /*public void Initialization(IView view)
-        {
-            _view = view;
-            if (TryGetComponent(out Renderer renderer))
-            {
-                renderer.material.color = Color.cyan;
-            }
-        }*/
-
-        public int CompareTo(InteractiveObject other)
-        {
-            return name.CompareTo(other.name);
+            renderer.material.color = Color.cyan;
         }
+    }*/
+
+    public int CompareTo(InteractiveObject other)
+    {
+        return name.CompareTo(other.name);
     }
 }

@@ -11,4 +11,9 @@ internal class DistBonus : InteractiveObject, IGetBonus
         // сокращает минимальную дистанцию между снитчем и игроком
     }
 
+    protected override void Interaction()
+    {
+
+    }
+
 }
